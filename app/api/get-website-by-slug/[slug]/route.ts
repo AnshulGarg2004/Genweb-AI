@@ -1,4 +1,5 @@
 import Websites from "@/model/website.model"
+import connectDB from "@/lib/connectDB";
 import { NextRequest, NextResponse } from "next/server";
 
 export const GET = async (_req: NextRequest, { params }: { params: Promise<{ slug: string }> }) => {
@@ -11,6 +12,7 @@ export const GET = async (_req: NextRequest, { params }: { params: Promise<{ slu
 
     
     try {
+        await connectDB();
         const website = await Websites.findOne({slug});
         console.log("found website by slug: ", website);
         

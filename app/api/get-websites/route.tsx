@@ -1,8 +1,10 @@
 import Websites from "@/model/website.model"
+import connectDB from "@/lib/connectDB";
 import { NextResponse } from "next/server";
 
 export const GET = async () => {
     try {
+        await connectDB();
         const websites =  await Websites.find();
         console.log("Websites : ", websites);
         if(!websites) {

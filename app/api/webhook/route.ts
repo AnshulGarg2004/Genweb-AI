@@ -1,4 +1,5 @@
 import stripe from "@/lib/stripe";
+import connectDB from "@/lib/connectDB";
 import Users from "@/model/user.model";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -18,10 +19,16 @@ export const POST = async (req : NextRequest) => {
         return NextResponse.json({success : false, message : "Error in webhook"}, {status : 500});
     }
     if(event.type === 'checkout.session.completed') {
+        await connectDB();
+
         const session = event.data.object;
         const userId = session?.metadata?.userId;
         const credits = Number(session?.metadata?.credits);
         const plan = session?.metadata?.plan;
+
+        if (!userId || Number.isNaN(credits)) {
+            return NextResponse.json({success : false, message : "Invalid webhook metadata"}, {status : 400});
+        }
 
         await Users.findByIdAndUpdate(userId, {
             $inc : { credits: credits },

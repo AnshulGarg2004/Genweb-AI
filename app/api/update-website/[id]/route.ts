@@ -1,4 +1,5 @@
 import { generateResponse } from "@/config/openRouter";
+import connectDB from "@/lib/connectDB";
 import Users from "@/model/user.model";
 import Websites from "@/model/website.model";
 import { auth } from "@clerk/nextjs/server";
@@ -23,6 +24,7 @@ export const POST = async (req: NextRequest, { params }: { params: Promise<{ id:
 
 
     try {
+        await connectDB();
         const { userId: clerkId } = await auth();
         const existingUser = await Users.findOne({ clerkId });
         if (!existingUser) {

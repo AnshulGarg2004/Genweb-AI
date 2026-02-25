@@ -1,4 +1,5 @@
 import { generateResponse } from "@/config/openRouter";
+import connectDB from "@/lib/connectDB";
 import Users from "@/model/user.model";
 import Websites from "@/model/website.model";
 import { auth } from "@clerk/nextjs/server";
@@ -251,6 +252,8 @@ FORMAT MUST MATCH EXACTLY.
 export const POST = async (req: NextRequest) => {
 
     const { prompt } = await req.json();
+
+    await connectDB();
 
     const { userId: clerkId } = await auth();
     console.log("clerk id: ", clerkId);

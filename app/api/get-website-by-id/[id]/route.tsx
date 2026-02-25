@@ -1,5 +1,6 @@
 import Users from "@/model/user.model";
 import Websites from "@/model/website.model";
+import connectDB from "@/lib/connectDB";
 import { auth } from "@clerk/nextjs/server"
 import { NextRequest, NextResponse } from "next/server";
 
@@ -7,6 +8,7 @@ import { NextRequest, NextResponse } from "next/server";
 export const GET = async (req : NextRequest, {params} : {params : Promise<{id: string}>}) => {
     const {id} = await params;
     try {
+        await connectDB();
         const {userId : clerkId} = await auth();
         const user = await Users.findOne({clerkId});
 

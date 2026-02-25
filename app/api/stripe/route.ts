@@ -1,4 +1,5 @@
 import { PLAN } from "@/lib/plan";
+import connectDB from "@/lib/connectDB";
 import stripe from "@/lib/stripe";
 import Users from "@/model/user.model";
 import { auth } from "@clerk/nextjs/server";
@@ -21,6 +22,8 @@ export const POST = async (req : NextRequest) => {
         }
 
         const plan : PlanProps = PLAN[planType as keyof typeof PLAN];
+
+        await connectDB();
         
         const {userId : clerkId} = await auth();
         const user = await Users.findOne({clerkId});
@@ -48,7 +51,7 @@ export const POST = async (req : NextRequest) => {
 
             metadata : {
                 userId : String(user._id),
-                credits : plan.credits,
+                credits : String(plan.credits),
                 plan : plan.plan
             },
             success_url : `${process.env.FRONTEND_URL}`,
