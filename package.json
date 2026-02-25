@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@clerk/nextjs": "^6.38.1",
+    "@clerk/themes": "^2.4.55",
     "@monaco-editor/react": "^4.7.0",
     "@openrouter/sdk": "^0.8.0",
     "axios": "^1.13.5",

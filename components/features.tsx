@@ -2,23 +2,33 @@ import { Iwebsite } from '@/model/website.model';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import GlassCard from './GlassCard';
+import MotionWrapper from './MotionWrapper';
 
 interface featuresProps {
     title: string;
     desc: string;
+    icon: string;
+    glowColor: 'cyan' | 'purple' | 'gold';
 }
 const features: featuresProps[] = [
     {
         title: "AI Generated Code",
-        desc: "Genweb.ai builds real websites-clean code, animations, responsiveness, and scalable structure"
+        desc: "Clean, production-ready code with animations, responsiveness, and scalable architecture — built in seconds.",
+        icon: "⚡",
+        glowColor: "cyan",
     },
     {
-        title: "Fully Responsive Layouts",
-        desc: "Genweb.ai builds real websites-clean code, animations, responsiveness, and scalable structure"
+        title: "Fully Responsive",
+        desc: "Every pixel adapts perfectly across all devices — desktop, tablet, and mobile, right out of the box.",
+        icon: "📱",
+        glowColor: "purple",
     },
     {
-        title: "Production Ready Outputs",
-        desc: "Genweb.ai builds real websites-clean code, animations, responsiveness, and scalable structure"
+        title: "Production Ready",
+        desc: "Deploy instantly. Polished, performant code built to scale and ready for the real world.",
+        icon: "🚀",
+        glowColor: "gold",
     },
 ]
 
@@ -28,40 +38,45 @@ const Features = () => {
         const fetchWebsites = async () => {
             try {
                 const response = await axios.get('/api/get-websites');
-                console.log("Response from get websites: ", response);
                 setWebsites(response.data);
-
-            } catch (error) {
-
-            }
+            } catch (error) { }
         }
-        console.log("website: ", websites);
-        
         fetchWebsites();
     }, [])
     return (
-        <div className='grid grid-cols-1 md:grid-cols-3 gap-5'>
-
-
+        <div>
             <SignedIn>
-                 {
-                    features.map((feature, index) => (
-                        <div key={index} className='bg-zinc-700 p-3 rounded-md'>
-                            <h1>{feature.title}</h1>
-                            <p>{feature.desc}</p>
-                        </div>
-                    ))
-                }
+                <MotionWrapper delay={0.1}>
+                    <div className='text-center mb-12'>
+                        <p className='text-sm font-medium text-cyan-400 tracking-wider uppercase mb-3'>Features</p>
+                        <h2 className='text-3xl md:text-4xl font-bold text-white'>
+                            Why <span className='bg-gradient-to-r from-cyan-400 to-purple-500 bg-clip-text text-transparent'>Genweb.ai</span>?
+                        </h2>
+                    </div>
+                </MotionWrapper>
+                <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
+                    {
+                        features.map((feature, index) => (
+                            <GlassCard
+                                key={index}
+                                glowColor={feature.glowColor}
+                                delay={0.2 + index * 0.12}
+                                className='p-7 flex flex-col gap-4'
+                            >
+                                <div className='w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-2xl'>
+                                    {feature.icon}
+                                </div>
+                                <h3 className='text-lg font-semibold text-white'>
+                                    {feature.title}
+                                </h3>
+                                <p className='text-gray-400 text-sm leading-relaxed'>{feature.desc}</p>
+                            </GlassCard>
+                        ))
+                    }
+                </div>
             </SignedIn>
             <SignedOut>
-               {
-                    // websites.map((website, index) => (
-                    //     <div key={index} className='border border-zinc-600 rounded-md p-3'>
-                    //         <iframe srcDoc={website.deployedUrl} className='w-full h-64' />
-                    //         <h1 className='text-lg font-bold'>{website.title}</h1>
-                    //     </div>
-                    // ))
-                }
+                {/* Reserved for public showcase */}
             </SignedOut>
         </div>
     )

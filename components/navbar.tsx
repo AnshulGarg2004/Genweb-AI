@@ -1,10 +1,12 @@
 'use client'
-import { SignedIn, SignedOut, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs';
+import { SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { Coins } from 'lucide-react'
 import React, { useEffect, useState } from 'react'
 import axios from 'axios';
 import { Iuser } from '@/model/user.model';
+import MotionWrapper from './MotionWrapper';
+import { motion } from 'framer-motion';
 
 const Navbar = () => {
     const router = useRouter();
@@ -14,44 +16,90 @@ const Navbar = () => {
         try {
             const fetchUser = async () => {
                 const response = await axios.get('/api/get-current-user');
-                console.log("Response from user: ", response.data.existingUser);
                 setCurrentUser(response.data.existingUser)
             }
             fetchUser();
         } catch (error) {
             console.log("Error in getting user: ", error);
         }
-       
     }, [])
+
     return (
-        <div className='mx-auto shadow'>
-            <div className='flex items-center justify-between'>
-                <h1 className='text-2xl'>Genweb
-                    <span className='text-gray-400'>.ai</span>
-                </h1>
-                <div className='flex gap-6 mx-5'>
-                    <header className="flex justify-end items-center p-4 gap-4 h-16">
-                        {/* Show the sign-in and sign-up buttons when the user is signed out */}
-                        <button className='p-2 cursor-pointer' onClick={() => {
-                            router.push("/pricing");
-                        }}>Pricing : {currentUser?.plan || "free"}</button>
+        <MotionWrapper delay={0} className='sticky top-0 z-50'>
+            <nav
+                className='border-b border-white/[0.06]'
+                style={{
+                    background: 'rgba(0, 0, 0, 0.6)',
+                    backdropFilter: 'blur(24px)',
+                    WebkitBackdropFilter: 'blur(24px)',
+                }}
+            >
+                <div className='flex items-center justify-between px-6 py-4 max-w-7xl mx-auto'>
+                    {/* Logo */}
+                    <motion.h1
+                        className='text-2xl font-bold cursor-pointer select-none'
+                        onClick={() => router.push('/')}
+                        whileHover={{ scale: 1.03 }}
+                        whileTap={{ scale: 0.97 }}
+                    >
+                        <span className='bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent'>
+                            Genweb
+                        </span>
+                        <span className='text-gray-600'>.ai</span>
+                    </motion.h1>
+
+                    {/* Nav Items */}
+                    <div className='flex items-center gap-2'>
+                        <motion.button
+                            className='px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all duration-200 cursor-pointer'
+                            onClick={() => router.push("/pricing")}
+                            whileHover={{ scale: 1.03 }}
+                            whileTap={{ scale: 0.97 }}
+                        >
+                            Pricing
+                            <span className='ml-1.5 text-xs px-1.5 py-0.5 rounded bg-white/[0.06] text-gray-500'>
+                                {currentUser?.plan || "free"}
+                            </span>
+                        </motion.button>
+
                         <SignedOut>
-                            <button className='p-2 cursor-pointer' onClick={() => {
-                                router.push('/sign-in')
-                            }}>Sign In</button>
-                            <button className='p-2 cursor-pointer' onClick={() => {
-                                router.push('/sign-up')
-                            }}>Sign Up</button>
+                            <motion.button
+                                className='px-4 py-2 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-white/[0.06] transition-all duration-200 cursor-pointer'
+                                onClick={() => router.push('/sign-in')}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                            >
+                                Sign In
+                            </motion.button>
+                            <motion.button
+                                className='px-5 py-2 rounded-lg text-sm font-semibold text-white cursor-pointer'
+                                onClick={() => router.push('/sign-up')}
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.97 }}
+                                style={{
+                                    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                                    boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
+                                }}
+                            >
+                                Sign Up
+                            </motion.button>
                         </SignedOut>
-                        {/* Show the user button when the user is signed in */}
+
                         <SignedIn>
-                            <button><Coins className='w-5 h-5'/> Credits : {currentUser?.credits || 0}</button>
-                            <UserButton />
+                            <div className='flex items-center gap-1.5 px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.06]'>
+                                <Coins className='w-4 h-4 text-yellow-500' />
+                                <span className='text-sm font-medium text-yellow-500/90'>
+                                    {currentUser?.credits || 0}
+                                </span>
+                            </div>
+                            <div className='ml-1'>
+                                <UserButton />
+                            </div>
                         </SignedIn>
-                    </header>
+                    </div>
                 </div>
-            </div>
-        </div>
+            </nav>
+        </MotionWrapper>
     )
 }
 

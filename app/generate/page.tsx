@@ -2,13 +2,15 @@
 import axios from "axios";
 import { easeOut, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
+import MotionWrapper from "@/components/MotionWrapper";
+import NeonButton from "@/components/NeonButton";
 
 const Generate = () => {
     const [prompt, setprompt] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
     const [loading, setLoading] = useState(false);
     const [activeIndex, setActiveIndex] = useState(0);
-    const [error,  setError] = useState("");
+    const [error, setError] = useState("");
     const PHASES = [
         "Analysing your idea...",
         "Designing layout and structure...",
@@ -67,65 +69,96 @@ const Generate = () => {
         }
     }
     return (
-        <div className="min-h-screen bg-gray-950 text-white flex flex-col">
+        <div className="min-h-screen flex flex-col">
 
             {/* Navbar */}
-            <header className="flex justify-between items-center px-8 py-5 border-b border-gray-800">
-                <h1 className="text-2xl font-bold">
-                    Genweb <span className="text-indigo-500">.ai</span>
-                </h1>
-            </header>
+            <MotionWrapper delay={0}>
+                <header className="backdrop-blur-xl bg-white/5 border-b border-white/10">
+                    <div className="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
+                        <h1 className="text-2xl font-bold">
+                            <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
+                                Genweb
+                            </span>
+                            <span className="text-gray-500">.ai</span>
+                        </h1>
+                    </div>
+                </header>
+            </MotionWrapper>
 
             {/* Hero Section */}
             <main className="flex-1 flex flex-col items-center justify-center px-6 text-center">
 
-                <h2 className="text-4xl md:text-5xl font-bold leading-tight mb-6">
-                    Build Websites with{" "}
-                    <span className="text-indigo-500">Real Power AI</span>
-                </h2>
+                <MotionWrapper delay={0.1}>
+                    <h2 className="text-4xl md:text-6xl font-bold leading-tight mb-6">
+                        Build Websites with{" "}
+                        <span className="bg-gradient-to-r from-purple-500 via-pink-500 to-cyan-400 bg-clip-text text-transparent">
+                            Real Power AI
+                        </span>
+                    </h2>
+                </MotionWrapper>
 
-                <p className="text-gray-400 max-w-xl mb-8">
-                    Describe your website idea and let AI generate a modern, responsive website instantly.
-                </p>
+                <MotionWrapper delay={0.2}>
+                    <p className="text-gray-400 max-w-xl mb-10 text-lg leading-relaxed">
+                        Describe your website idea and let AI generate a modern, responsive website instantly.
+                    </p>
+                </MotionWrapper>
 
                 {/* Input Section */}
-                <div className="w-full max-w-2xl">
+                <MotionWrapper delay={0.3} className="w-full max-w-2xl">
                     <textarea
                         value={prompt}
                         onChange={(e) => {
                             setprompt(e.target.value);
                         }}
-                        placeholder="Describe your website..."
-                        className="w-full h-32 p-4 rounded-lg bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"
+                        placeholder="Describe your dream website..."
+                        className="w-full h-32 p-5 rounded-2xl backdrop-blur-xl bg-white/5 border border-white/10 text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 resize-none transition-all duration-300"
+                        style={{ boxShadow: '0 0 20px rgba(0, 242, 254, 0.05)' }}
                     />
 
-                    <button onClick={getData} className="mt-4 w-full py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 transition font-semibold cursor-pointer">
-                        Start Generating
-                    </button>
+                    <div className="mt-4">
+                        <NeonButton variant='purple' onClick={getData} className='w-full py-4 text-lg'>
+                            🚀 Start Generating
+                        </NeonButton>
+                    </div>
 
                     {error && (
-                        <div className=" text-red-50 p-2 text-sm">{error}</div>
+                        <motion.div
+                            initial={{ opacity: 0, y: -10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-4 p-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm"
+                        >
+                            {error}
+                        </motion.div>
                     )}
 
                     {loading && (
-                        <motion.div>
-                            <div className="flex justify-between text-sm text-gray-300 mb-2">
-                                <span>{PHASES[activeIndex]}</span>
-                                <span>{progress}%</span>
+                        <motion.div
+                            initial={{ opacity: 0, y: 10 }}
+                            animate={{ opacity: 1, y: 0 }}
+                            className="mt-6 backdrop-blur-xl bg-white/5 border border-white/10 rounded-2xl p-6"
+                            style={{ boxShadow: '0 0 30px rgba(168, 85, 247, 0.1)' }}
+                        >
+                            <div className="flex justify-between text-sm text-gray-300 mb-3">
+                                <span className="text-purple-400 font-medium">{PHASES[activeIndex]}</span>
+                                <span className="text-cyan-400 font-mono">{progress}%</span>
                             </div>
-                            <div className="w-full h-2 bg-gray-800 rounded-full overflow-hidden">
-                                <motion.div initial={{opacity : 0, width: 0}} className='h-full bg-gradient-to-r from-white to-zinc-300' animate={{ width: `${progress}%` }}
-                                    transition={{ ease: easeOut, duration: 0.8 }}>
-
-                                </motion.div>
+                            <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
+                                <motion.div
+                                    initial={{ opacity: 0, width: 0 }}
+                                    className='h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full'
+                                    animate={{ width: `${progress}%` }}
+                                    transition={{ ease: easeOut, duration: 0.8 }}
+                                    style={{ boxShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}
+                                />
                             </div>
 
-                            <div>Estimated time remaining: {" "}
-                                <span>~3-4 minutes</span>
+                            <div className="mt-3 text-sm text-gray-500">
+                                Estimated time remaining:{" "}
+                                <span className="text-gray-400">~3-4 minutes</span>
                             </div>
                         </motion.div>
                     )}
-                </div>
+                </MotionWrapper>
             </main>
         </div>
     );

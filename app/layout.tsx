@@ -4,6 +4,8 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import { syncUser } from "@/lib/syncUser";
+import AmbientBackground from "@/components/AmbientBackground";
+import { dark } from "@clerk/themes";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,20 +27,22 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const {userId} = await auth();
+  const { userId } = await auth();
   console.log('User id: ', userId);
-  if(userId) {
+  if (userId) {
     await syncUser();
   }
-  
+
   return (
-    <ClerkProvider>
+    <ClerkProvider appearance={{ baseTheme: dark }}>
       <html lang="en">
         <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} antialiased bg-black text-white min-h-screen overflow-x-hidden`}
         >
-
-          {children}
+          <AmbientBackground />
+          <div className="relative z-10">
+            {children}
+          </div>
         </body>
       </html>
     </ClerkProvider>

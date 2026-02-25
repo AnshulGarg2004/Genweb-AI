@@ -2,10 +2,13 @@
 import { Iwebsite } from '@/model/website.model'
 import { useUser } from '@clerk/nextjs'
 import axios from 'axios';
-import {motion} from 'framer-motion'
+import { motion } from 'framer-motion'
 import { CheckCircle, Plus, Rocket, Share2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import React, { useEffect, useState } from 'react'
+import GlassCard from '@/components/GlassCard'
+import MotionWrapper from '@/components/MotionWrapper'
+import NeonButton from '@/components/NeonButton'
 
 
 const Dashboard = () => {
@@ -51,67 +54,110 @@ const Dashboard = () => {
         getWebsites();
     }, [])
     return (
-        <div className='mt-5'>
-            <div className='flex items-center justify-between'>
-                <div>
-                    <h1>
-                        Genweb
-                        <span>.AI</span>
-                    </h1>
-                </div>
-                <div>
-                    <button className='p-2 flex cursor-pointer gap-2 bg-white text-black mr-6 mt-1 rounded-3xl' onClick={() => {
-                        router.push('/generate')
-                    }}><Plus className='h-5 w-5' /> New Website</button>
-                </div>
-            </div>
-
-            <div className='flex text-3xl mt-5'>
-                <h1>Welcome Back</h1>
-                <p>{user?.firstName} {user?.lastName}</p>
-            </div>
-            {websites.map((website, index) => {
-                const copied = copiedId === website._id.toString();
-                return (
-                    <div key={index} className='grid grid-cols-1 md:grid-cols-3 cursor-pointer' >
-                        <div onClick={() => {
-                            router.push(`/editor/${website._id}`)
-                        }}>
-                            <iframe srcDoc={website.latestCode} className='' />
-                            <div>
-                                <h1>{website.title}</h1>
-                            </div>
-                        </div>
-
-                        <div>
-                            {website.deployed ? (
-                                <motion.button
-                                whileTap={{}}
-                                onClick={() => handleCopy(website)} className={`p-2 cursor-pointer flex ${copied ? 'bg-red-500' : 'bg-green-500'}`}>
-                                    {copied ? (
-                                        <>
-                                        <CheckCircle className='h-5 w-5' />
-                                        Link copied!</>
-                                    ) : (
-                                        <>
-                                        <Share2 className='h-5 w-5' />
-                                    Share link
-                                    </>
-                                    )}
-                                </motion.button>
-                            ) : (
-
-                                <button onClick={() => handleDeploy(website._id.toString())} className='p-2 cursor-pointer flex'>
-
-                                    <Rocket className='h-5 w-5' />
-                                    Deploy
-                                </button>
-                            )}
-                        </div>
+        <div className='min-h-screen'>
+            {/* Header */}
+            <MotionWrapper delay={0}>
+                <div className='backdrop-blur-xl bg-white/5 border-b border-white/10'>
+                    <div className='flex items-center justify-between px-6 py-4 max-w-7xl mx-auto'>
+                        <h1 className='text-2xl font-bold cursor-pointer' onClick={() => router.push('/')}>
+                            <span className='bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent'>
+                                Genweb
+                            </span>
+                            <span className='text-gray-500'>.AI</span>
+                        </h1>
+                        <NeonButton variant='cyan' onClick={() => router.push('/generate')} className='flex items-center gap-2'>
+                            <Plus className='h-4 w-4' /> New Website
+                        </NeonButton>
                     </div>
-                )
-            })}
+                </div>
+            </MotionWrapper>
 
+            {/* Welcome */}
+            <div className='max-w-7xl mx-auto px-6 py-10'>
+                <MotionWrapper delay={0.1}>
+                    <h2 className='text-4xl font-bold'>
+                        Welcome Back,{' '}
+                        <span className='bg-gradient-to-r from-purple-400 to-pink-500 bg-clip-text text-transparent'>
+                            {user?.firstName} {user?.lastName}
+                        </span>
+                    </h2>
+                    <p className='text-gray-400 mt-2'>Here are your generated websites</p>
+                </MotionWrapper>
+
+                {/* Website Grid */}
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-10'>
+                    {websites.map((website, index) => {
+                        const copied = copiedId === website._id.toString();
+                        return (
+                            <GlassCard
+                                key={index}
+                                glowColor='blue'
+                                delay={0.2 + index * 0.1}
+                                className='overflow-hidden flex flex-col'
+                            >
+                                {/* Preview */}
+                                <div
+                                    className='cursor-pointer'
+                                    onClick={() => router.push(`/editor/${website._id}`)}
+                                >
+                                    <div className='relative h-48 overflow-hidden rounded-t-2xl'>
+                                        <iframe
+                                            srcDoc={website.latestCode}
+                                            className='w-full h-full pointer-events-none scale-75 origin-top-left'
+                                            style={{ width: '133%', height: '133%' }}
+                                        />
+                                    </div>
+                                    <div className='px-5 pt-4'>
+                                        <h3 className='text-lg font-semibold text-white truncate'>{website.title}</h3>
+                                    </div>
+                                </div>
+
+                                {/* Actions */}
+                                <div className='px-5 pb-5 pt-3 flex items-center gap-3'>
+                                    {website.deployed ? (
+                                        <motion.button
+                                            whileHover={{ scale: 1.05, filter: 'brightness(1.2)' }}
+                                            whileTap={{ scale: 0.95 }}
+                                            onClick={() => handleCopy(website)}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-300 ${copied
+                                                    ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white'
+                                                    : 'bg-gradient-to-r from-emerald-400 to-cyan-500 text-white'
+                                                }`}
+                                            style={{
+                                                boxShadow: copied
+                                                    ? '0 0 20px rgba(251, 191, 36, 0.3)'
+                                                    : '0 0 20px rgba(52, 211, 153, 0.3)',
+                                            }}
+                                        >
+                                            {copied ? (
+                                                <><CheckCircle className='h-4 w-4' /> Copied!</>
+                                            ) : (
+                                                <><Share2 className='h-4 w-4' /> Share</>
+                                            )}
+                                        </motion.button>
+                                    ) : (
+                                        <NeonButton variant='cyan' onClick={() => handleDeploy(website._id.toString())} className='flex items-center gap-2 text-sm'>
+                                            <Rocket className='h-4 w-4' /> Deploy
+                                        </NeonButton>
+                                    )}
+                                </div>
+                            </GlassCard>
+                        )
+                    })}
+                </div>
+
+                {/* Empty State */}
+                {websites.length === 0 && (
+                    <MotionWrapper delay={0.3} className='flex flex-col items-center justify-center py-20 text-center'>
+                        <div className='text-6xl mb-4'>🌐</div>
+                        <h3 className='text-2xl font-semibold text-gray-300'>No websites yet</h3>
+                        <p className='text-gray-500 mt-2 mb-6'>Create your first AI-generated website</p>
+                        <NeonButton variant='gold' onClick={() => router.push('/generate')}>
+                            ✨ Generate Website
+                        </NeonButton>
+                    </MotionWrapper>
+                )}
+            </div>
         </div>
     )
 }
