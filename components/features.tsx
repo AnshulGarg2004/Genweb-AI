@@ -52,18 +52,33 @@ const Features = () => {
         <div>
             <SignedIn>
                 <MotionWrapper delay={0.1}>
-                    <div className='flex flex-col items-center text-center mb-10'>
-                        <h2 className='text-3xl md:text-4xl font-bold text-white'>
-                            Your Recent{' '}
-                            <span className='bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent'>
-                                Websites
-                            </span>
-                        </h2>
-                        <p className='text-gray-400 mt-2'>Pick up where you left off</p>
+                    <div className='flex flex-col md:flex-row md:items-center md:justify-between gap-5 mb-10'>
+                        <div className='text-center md:text-left'>
+                            <h2 className='text-3xl md:text-4xl font-bold text-white'>
+                                Your Recent{' '}
+                                <span className='bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent'>
+                                    Websites
+                                </span>
+                            </h2>
+                            <p className='text-gray-400 mt-2'>Pick up where you left off</p>
+                        </div>
+                        <motion.button
+                            onClick={() => router.push('/dashboard')}
+                            className='self-center md:self-auto px-6 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-500 shadow-[0_0_20px_rgba(59,130,246,0.35),0_0_40px_rgba(168,85,247,0.2)] cursor-pointer whitespace-nowrap'
+                            whileHover={{
+                                scale: 1.05,
+                                filter: 'brightness(1.18)',
+                                boxShadow: '0 0 30px rgba(59,130,246,0.5), 0 0 60px rgba(168,85,247,0.3)',
+                            }}
+                            whileTap={{ scale: 0.95 }}
+                            transition={{ type: 'spring', stiffness: 350, damping: 18 }}
+                        >
+                            View All →
+                        </motion.button>
                     </div>
                 </MotionWrapper>
                 <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-                    {websites.slice(0, 6).map((website, index) => (
+                    {websites.slice(0, 3).map((website, index) => (
                         <GlassCard
                             key={index}
                             glowColor='blue'
@@ -100,8 +115,8 @@ const Features = () => {
                 </div>
             </SignedIn>
             <SignedOut>
-                {features.map((feature, index) => (
-                    <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+                    {features.map((feature, index) => (
                         <GlassCard
                             key={index}
                             glowColor={feature.glowColor}
@@ -116,8 +131,8 @@ const Features = () => {
                             </h3>
                             <p className='text-gray-400 text-sm leading-relaxed'>{feature.desc}</p>
                         </GlassCard>
-                    </div>
-                ))}
+                    ))}
+                </div>
             </SignedOut>
         </div>
     )
