@@ -3,12 +3,31 @@ import Features from '@/components/features'
 import Navbar from '@/components/navbar'
 import MotionWrapper from '@/components/MotionWrapper'
 import NeonButton from '@/components/NeonButton'
+import GlassCard from '@/components/GlassCard'
+import { Iwebsite } from '@/model/website.model'
 import { useRouter } from 'next/navigation'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
+import axios from 'axios'
 
 const Homepage = () => {
     const router = useRouter();
+    const [websites, setWebsites] = useState<Iwebsite[]>([]);
+
+    useEffect(() => {
+        const getWebsites = async () => {
+            try {
+                const response = await axios.get('/api/get-websites');
+                if (response.data.websites) {
+                    setWebsites(response.data.websites);
+                }
+            } catch (error) {
+                console.log('Error fetching websites for homepage');
+            }
+        };
+        getWebsites();
+    }, []);
+
     return (
         <div className='min-h-screen'>
             <Navbar />
@@ -55,21 +74,7 @@ const Homepage = () => {
                     </motion.button>
                 </MotionWrapper>
 
-                {/* Stats row */}
-                <MotionWrapper delay={0.5} className='mt-20 flex items-center gap-12 md:gap-20'>
-                    {[
-                        { value: '10K+', label: 'Websites Built' },
-                        { value: '99%', label: 'Uptime' },
-                        { value: '<30s', label: 'Generation Time' },
-                    ].map((stat, i) => (
-                        <div key={i} className='text-center'>
-                            <div className='text-2xl md:text-3xl font-bold bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent'>
-                                {stat.value}
-                            </div>
-                            <div className='text-sm text-gray-500 mt-1'>{stat.label}</div>
-                        </div>
-                    ))}
-                </MotionWrapper>
+
             </div>
 
             {/* Features Section */}

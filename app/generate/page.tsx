@@ -86,21 +86,24 @@ const Generate = () => {
             <MotionWrapper delay={0}>
                 <header className="backdrop-blur-xl bg-white/5 border-b border-white/10">
                     <div className="flex justify-between items-center px-8 py-5 max-w-7xl mx-auto">
-                        <h1 className="text-2xl font-bold">
+                        <h1 onClick={() => {
+                            router.push('/')
+                        }} className="text-2xl font-bold cursor-pointer">
                             <span className="bg-gradient-to-r from-cyan-400 to-blue-500 bg-clip-text text-transparent">
                                 Genweb
                             </span>
                             <span className="text-gray-500">.ai</span>
                         </h1>
                             <motion.button
-                                className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 cursor-pointer"
+                                className="px-5 py-2.5 rounded-xl text-sm font-semibold text-white bg-gradient-to-r from-cyan-400 to-blue-500 shadow-[0_0_20px_rgba(0,242,254,0.3),0_0_40px_rgba(0,242,254,0.1)] cursor-pointer"
                                 onClick={() => router.push('/dashboard')}
-                                whileHover={{ scale: 1.03 }}
-                                whileTap={{ scale: 0.97 }}
-                                style={{
-                                    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
-                                    boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
+                                whileHover={{
+                                    scale: 1.05,
+                                    filter: 'brightness(1.2)',
+                                    boxShadow: '0 0 30px rgba(0,242,254,0.5), 0 0 60px rgba(0,242,254,0.2), 0 0 80px rgba(0,242,254,0.1)',
                                 }}
+                                whileTap={{ scale: 0.93 }}
+                                transition={{ type: 'spring', stiffness: 400, damping: 15 }}
                             >
                                 Dashboard
                             </motion.button>

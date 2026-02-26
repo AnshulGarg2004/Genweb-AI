@@ -93,41 +93,52 @@ const Dashboard = () => {
                                 key={index}
                                 glowColor='blue'
                                 delay={0.2 + index * 0.1}
-                                className='overflow-hidden flex flex-col'
+                                className='overflow-hidden flex flex-col group'
                             >
                                 {/* Preview */}
                                 <div
                                     className='cursor-pointer'
                                     onClick={() => router.push(`/editor/${website._id}`)}
                                 >
-                                    <div className='relative h-48 overflow-hidden rounded-t-2xl'>
+                                    <div className='relative h-52 overflow-hidden rounded-t-2xl bg-gradient-to-br from-gray-900 to-gray-950 border-b border-white/5'>
                                         <iframe
                                             srcDoc={website.latestCode}
-                                            className='w-full h-full pointer-events-none scale-75 origin-top-left'
-                                            style={{ width: '133%', height: '133%' }}
+                                            className='w-full h-full pointer-events-none scale-[0.55] origin-top-left transition-transform duration-500 group-hover:scale-[0.58]'
+                                            style={{ width: '182%', height: '182%' }}
                                         />
+                                        {/* Hover overlay */}
+                                        <div className='absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4'>
+                                            <span className='text-xs font-medium text-white/80 bg-white/10 backdrop-blur-sm px-3 py-1 rounded-full border border-white/10'>
+                                                Click to edit
+                                            </span>
+                                        </div>
                                     </div>
                                     <div className='px-5 pt-4'>
-                                        <h3 className='text-lg font-semibold text-white truncate'>{website.title}</h3>
+                                        <h3 className='text-lg font-semibold text-white truncate group-hover:bg-gradient-to-r group-hover:from-cyan-400 group-hover:to-blue-400 group-hover:bg-clip-text group-hover:text-transparent transition-all duration-300'>{website.title}</h3>
+                                        <p className='text-xs text-gray-500 mt-1 truncate'>
+                                            {website.deployed ? '🟢 Deployed' : '🔵 Draft'}
+                                        </p>
                                     </div>
                                 </div>
 
                                 {/* Actions */}
-                                <div className='px-5 pb-5 pt-3 flex items-center gap-3'>
+                                <div className='px-5 pb-5 pt-3 mt-auto flex items-center gap-3'>
                                     {website.deployed ? (
                                         <motion.button
-                                            whileHover={{ scale: 1.05, filter: 'brightness(1.2)' }}
-                                            whileTap={{ scale: 0.95 }}
-                                            onClick={() => handleCopy(website)}
-                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium cursor-pointer transition-all duration-300 ${copied
-                                                    ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white'
-                                                    : 'bg-gradient-to-r from-emerald-400 to-cyan-500 text-white'
-                                                }`}
-                                            style={{
+                                            whileHover={{
+                                                scale: 1.05,
+                                                filter: 'brightness(1.2)',
                                                 boxShadow: copied
-                                                    ? '0 0 20px rgba(251, 191, 36, 0.3)'
-                                                    : '0 0 20px rgba(52, 211, 153, 0.3)',
+                                                    ? '0 0 30px rgba(251,191,36,0.5), 0 0 60px rgba(251,191,36,0.2)'
+                                                    : '0 0 30px rgba(52,211,153,0.5), 0 0 60px rgba(52,211,153,0.2)',
                                             }}
+                                            whileTap={{ scale: 0.93 }}
+                                            transition={{ type: 'spring', stiffness: 400, damping: 15 }}
+                                            onClick={() => handleCopy(website)}
+                                            className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-semibold cursor-pointer ${copied
+                                                    ? 'bg-gradient-to-r from-yellow-400 to-orange-500 text-white shadow-[0_0_20px_rgba(251,191,36,0.3)]'
+                                                    : 'bg-gradient-to-r from-emerald-400 to-cyan-500 text-white shadow-[0_0_20px_rgba(52,211,153,0.3)]'
+                                                }`}
                                         >
                                             {copied ? (
                                                 <><CheckCircle className='h-4 w-4' /> Copied!</>
