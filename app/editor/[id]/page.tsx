@@ -59,11 +59,17 @@ const Editorpage = () => {
 
 
     const handleUpdate = async () => {
+        const currentPrompt = prompt.trim();
+        if (!currentPrompt) {
+            return;
+        }
+
+        setPrompt("");
         setLoading(true);
-        setMessages((m) => [...m, { role: "user", content: prompt } as any])
+        setMessages((m) => [...m, { role: "user", content: currentPrompt } as any])
 
         try {
-            const response = await axios.post(`/api/update-website/${id}`, { prompt }, {
+            const response = await axios.post(`/api/update-website/${id}`, { prompt: currentPrompt }, {
                 headers: {
                     'Content-Type': 'application/json'
                 }
@@ -223,6 +229,7 @@ const Editorpage = () => {
                             <motion.button
                                 className='p-3 rounded-xl bg-gradient-to-r from-cyan-400 to-blue-500 cursor-pointer'
                                 onClick={handleUpdate}
+                                
                                 whileHover={{ scale: 1.1, filter: 'brightness(1.2)' }}
                                 whileTap={{ scale: 0.95 }}
                                 style={{ boxShadow: '0 0 15px rgba(0, 242, 254, 0.3)' }}

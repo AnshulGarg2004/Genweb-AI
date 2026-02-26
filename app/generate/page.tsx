@@ -4,8 +4,10 @@ import { easeOut, motion } from "framer-motion";
 import React, { useEffect, useState } from "react";
 import MotionWrapper from "@/components/MotionWrapper";
 import NeonButton from "@/components/NeonButton";
+import { useRouter } from "next/navigation";
 
 const Generate = () => {
+    const router = useRouter();
     const [prompt, setprompt] = useState<string>("");
     const [progress, setProgress] = useState<number>(0);
     const [loading, setLoading] = useState(false);
@@ -25,20 +27,22 @@ const Generate = () => {
             setProgress(0);
             return;
         }
-        let value = 0;
-        let phase = 0;
+
+        setProgress(8);
+        setActiveIndex(0);
+
         const time = setInterval(() => {
-            const increment = value < 20 ? Math.random() * 1.5 : value < 60 ? Math.random() * 1.2 : Math.random() * 0.6;
-            value += increment;
+            setProgress((prev) => {
+                if (prev >= 92) return 92;
 
-            if (value >= 92) {
-                value = 92;
-            }
+                const increment = prev < 20 ? Math.random() * 2.2 : prev < 60 ? Math.random() * 1.6 : Math.random() * 0.9;
+                const next = Math.min(92, prev + increment);
+                const phase = Math.min(Math.floor((next / 100) * PHASES.length), PHASES.length - 1);
+                setActiveIndex(phase);
 
-            phase = Math.min(Math.floor((value / 100) * PHASES.length), PHASES.length - 1);
-            setProgress(Math.floor(value));
-            setActiveIndex(phase);
-        }, 450)
+                return Math.floor(next);
+            });
+        }, 180)
 
         return () => {
             clearInterval(time);
@@ -49,6 +53,7 @@ const Generate = () => {
 
 
     const getData = async () => {
+        setError("");
         setLoading(true);
         try {
             const res = await axios.post('/api/generate-website', { prompt }, {
@@ -58,6 +63,12 @@ const Generate = () => {
             })
             if (!res) {
                 console.log("Error in geting resposne");
+            }
+            setProgress(100);
+            setActiveIndex(PHASES.length - 1);
+            const websiteId = res.data?.websites?._id;
+            if (websiteId) {
+                router.push(`/editor/${websiteId}`);
             }
             console.log("REsponse got successfully: ", res);
         } catch (error: any) {
@@ -144,9 +155,9 @@ const Generate = () => {
                             </div>
                             <div className="w-full h-2 bg-white/5 rounded-full overflow-hidden">
                                 <motion.div
-                                    initial={{ opacity: 0, width: 0 }}
+                                    initial={{ width: 0 }}
                                     className='h-full bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 rounded-full'
-                                    animate={{ width: `${progress}%` }}
+                                    animate={{ opacity: 1, width: `${progress}%` }}
                                     transition={{ ease: easeOut, duration: 0.8 }}
                                     style={{ boxShadow: '0 0 10px rgba(168, 85, 247, 0.5)' }}
                                 />
