@@ -5,17 +5,24 @@ import { NextResponse } from "next/server";
 
 export const GET = async () => {
     try {
-        await connectDB();
-        const {userId} = await auth();
-        const existingUser = await Users.findOne({clerkId : userId});
-        if(!existingUser) {
-            console.log("User does not exist");
-            return NextResponse.json({success : false, message : "User does not exists"}, {status : 401});
+        const { userId: clerkId } = await auth();
+
+        if(!clerkId) {
+            console.log("Clerk ide is null", clerkId);
+            return NextResponse.json({success : false, message : "clerk id is null"}, {status : 404});
         }
-        console.log("Uer of mongodb : ", existingUser);
-        return NextResponse.json({success : true, message : "User found Successfully", existingUser}, {status : 200});
+
+        await connectDB();
+
+        const user = await Users.findOneAndUpdate(
+            { clerkId },
+            { $setOnInsert: { clerkId, clerkID: clerkId } },
+            { new: true, upsert: true }
+        );
+
+        return NextResponse.json({ success: true, user }, { status: 200 });
     } catch (error) {
         console.log("Error in get-current-user: ", error);
-        return NextResponse.json({success : false, message : "Error fetching current user"}, {status : 500});
+        return NextResponse.json({ success: false, message: "Error fetching current user" }, { status: 500 });
     }
 }

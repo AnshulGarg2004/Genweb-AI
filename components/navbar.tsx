@@ -13,16 +13,20 @@ const Navbar = () => {
     const [currentUser, setCurrentUser] = useState<Iuser | null>(null)
 
     useEffect(() => {
-        try {
-            const fetchUser = async () => {
+        const fetchUser = async () => {
+            try {
                 const response = await axios.get('/api/get-current-user');
-                setCurrentUser(response.data.existingUser)
+                setCurrentUser(response.data.user);
+            } catch (error) {
+                console.log("Error in getting user: ", error);
+                setCurrentUser(null);
             }
-            fetchUser();
-        } catch (error) {
-            console.log("Error in getting user: ", error);
         }
+        fetchUser();
     }, [])
+
+    console.log("Curent user: ", currentUser);
+    
 
     return (
         <MotionWrapper delay={0} className='sticky top-0 z-50'>
