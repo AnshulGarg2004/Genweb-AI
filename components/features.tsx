@@ -1,9 +1,11 @@
 import { Iwebsite } from '@/model/website.model';
 import { SignedIn, SignedOut } from '@clerk/nextjs';
 import axios from 'axios';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
+import {motion} from 'framer-motion'
 import GlassCard from './GlassCard';
 import MotionWrapper from './MotionWrapper';
+import { useRouter } from 'next/navigation';
 
 interface featuresProps {
     title: string;
@@ -33,12 +35,15 @@ const features: featuresProps[] = [
 ]
 
 const Features = () => {
+
+    const router = useRouter();
     const [websites, setWebsites] = useState<Iwebsite[]>([]);
+
     useEffect(() => {
         const fetchWebsites = async () => {
             try {
                 const response = await axios.get('/api/get-websites');
-                setWebsites(response.data);
+                setWebsites(response.data.websites);
             } catch (error) { }
         }
         fetchWebsites();
@@ -55,28 +60,53 @@ const Features = () => {
                     </div>
                 </MotionWrapper>
                 <div className='grid grid-cols-1 md:grid-cols-3 gap-6'>
-                    {
-                        features.map((feature, index) => (
-                            <GlassCard
-                                key={index}
-                                glowColor={feature.glowColor}
-                                delay={0.2 + index * 0.12}
-                                className='p-7 flex flex-col gap-4'
+                    {websites.slice(0, 3).map((website, index) => (
+                        <GlassCard
+                            key={index}
+                            glowColor='blue'
+                            delay={0.2 + index * 0.1}
+                            className='overflow-hidden flex flex-col'
+                        >
+                            {/* Preview */}
+                            <div
+                                className='cursor-pointer'
+                                onClick={() => router.push(`/editor/${website._id}`)}
                             >
-                                <div className='w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-2xl'>
-                                    {feature.icon}
+                                <div className='relative h-48 overflow-hidden rounded-t-2xl'>
+                                    <iframe
+                                        srcDoc={website.latestCode}
+                                        className='w-full h-full pointer-events-none scale-75 origin-top-left'
+                                        style={{ width: '133%', height: '133%' }}
+                                    />
                                 </div>
-                                <h3 className='text-lg font-semibold text-white'>
-                                    {feature.title}
-                                </h3>
-                                <p className='text-gray-400 text-sm leading-relaxed'>{feature.desc}</p>
-                            </GlassCard>
-                        ))
-                    }
+                                <div className='px-5 pt-4'>
+                                    <h3 className='text-lg font-semibold text-white truncate'>{website.title}</h3>
+                                </div>
+                            </div>
+
+                        </GlassCard>
+                    ))}
                 </div>
             </SignedIn>
             <SignedOut>
-                {/* Reserved for public showcase */}
+                {
+                    features.map((feature, index) => (
+                        <GlassCard
+                            key={index}
+                            glowColor={feature.glowColor}
+                            delay={0.2 + index * 0.12}
+                            className='p-7 flex flex-col gap-4'
+                        >
+                            <div className='w-12 h-12 rounded-xl bg-white/[0.06] border border-white/[0.06] flex items-center justify-center text-2xl'>
+                                {feature.icon}
+                            </div>
+                            <h3 className='text-lg font-semibold text-white'>
+                                {feature.title}
+                            </h3>
+                            <p className='text-gray-400 text-sm leading-relaxed'>{feature.desc}</p>
+                        </GlassCard>
+                    ))
+                }
             </SignedOut>
         </div>
     )

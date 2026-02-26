@@ -3,13 +3,14 @@ import { Imessage, Iwebsite } from '@/model/website.model';
 import { Editor } from '@monaco-editor/react';
 import axios from 'axios';
 import { Code2, Fullscreen, Monitor, Rocket, Send, X } from 'lucide-react';
-import { useParams } from 'next/navigation'
+import { useParams, useRouter } from 'next/navigation'
 import React, { useEffect, useRef, useState } from 'react'
 import MotionWrapper from '@/components/MotionWrapper';
 import NeonButton from '@/components/NeonButton';
 import { motion } from 'framer-motion';
 
 const Editorpage = () => {
+    const router = useRouter();
     const params = useParams();
     const id = params.id;
     const [website, setWebsite] = useState<Iwebsite | null>(null);
@@ -135,6 +136,21 @@ const Editorpage = () => {
                     </h1>
 
                     <div className="flex items-center gap-3">
+                      
+                            <motion.button
+                                className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 cursor-pointer"
+                                onClick={() => router.push('/dashboard')}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                                style={{
+                                    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                                    boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
+                                }}
+                            >
+                                Dashboard
+                            </motion.button>
+                       
+
                         <NeonButton variant='cyan' onClick={handleDeploy} className="flex items-center gap-2 px-4 py-2 text-sm">
                             <Rocket className="h-4 w-4" />
                             Deploy

@@ -92,6 +92,19 @@ const Generate = () => {
                             </span>
                             <span className="text-gray-500">.ai</span>
                         </h1>
+                            <motion.button
+                                className="px-4 py-2 rounded-lg text-sm font-semibold text-white transition-all duration-200 cursor-pointer"
+                                onClick={() => router.push('/dashboard')}
+                                whileHover={{ scale: 1.03 }}
+                                whileTap={{ scale: 0.97 }}
+                                style={{
+                                    background: 'linear-gradient(135deg, #06b6d4, #3b82f6)',
+                                    boxShadow: '0 0 20px rgba(6, 182, 212, 0.25)',
+                                }}
+                            >
+                                Dashboard
+                            </motion.button>
+                 
                     </div>
                 </header>
             </MotionWrapper>
